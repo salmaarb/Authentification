@@ -91,6 +91,11 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             .antMatchers("/demande/**").permitAll()
             .antMatchers("/jour/**").permitAll()
             .antMatchers("/validation/**").permitAll()
+            .antMatchers("/userrr/**").permitAll()
+            .antMatchers("/update/**").permitAll()
+    //http://localhost:9004/demandes/api/auth/userr
+                .antMatchers("/demandes/**").permitAll()
+
             .anyRequest().authenticated();
     
     http.authenticationProvider(authenticationProvider());

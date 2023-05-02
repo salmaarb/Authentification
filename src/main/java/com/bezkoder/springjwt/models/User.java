@@ -2,7 +2,6 @@ package com.bezkoder.springjwt.models;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -32,6 +31,10 @@ public class User {
   @Size(max = 120)
   private String password;
 
+  private int solde;
+  @Lob
+  @Column(columnDefinition = "MEDIUMBLOB")
+  private String image;
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(  name = "user_roles", 
         joinColumns = @JoinColumn(name = "user_id"), 
@@ -41,10 +44,28 @@ public class User {
   public User() {
   }
 
-  public User(String username, String email, String password) {
+  public User(String username, String email, String password,String image,int solde) {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.image=image;
+    this.solde=solde;
+  }
+
+  public int getSolde() {
+    return solde;
+  }
+
+  public void setSolde(int solde) {
+    this.solde = solde;
+  }
+
+  public String getImage() {
+    return image;
+  }
+
+  public void setImage(String image) {
+    this.image = image;
   }
 
   public int getId() {

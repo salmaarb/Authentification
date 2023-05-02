@@ -1,5 +1,7 @@
 package com.bezkoder.springjwt.controllers;
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.bezkoder.springjwt.models.ERole;
@@ -27,8 +30,11 @@ import com.bezkoder.springjwt.repository.RoleRepository;
 import com.bezkoder.springjwt.repository.UserRepository;
 import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
+import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin({"http://localhost:9001/demande","http://localhost:3000","http://localhost:8081"})
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -60,12 +66,14 @@ public class AuthController {
     List<String> roles = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
         .collect(Collectors.toList());
-
+    System.out.println(  userDetails.getImage());
     return ResponseEntity.ok(new JwtResponse(jwt, 
                          userDetails.getId(), 
                          userDetails.getUsername(), 
-                         userDetails.getEmail(), 
+                         userDetails.getEmail(),
+                         userDetails.getImage(),
                          roles));
+
   }
 
   //@GetMapping("/userr")
@@ -74,8 +82,22 @@ public class AuthController {
  //   Long userId = userDetails.getId();
  //   return userId;
  // }
+  @GetMapping("/userrr")
+  public List<User> find(){
+    List<User> u = userRepository.findAll();
+    return u;
+  }
+  @GetMapping ("/solde/{id}")
+  int getSolde(@PathVariable int id){
+    return userRepository.getSolde(id);
+  }
+  @PutMapping ("/solde/{n}/{id}")
+  void updateSolde(@PathVariable int n,@PathVariable int id){
+    userRepository.updateSolde(n,id);
+  }
+
   @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+  public ResponseEntity<?> registerUser(@RequestParam("image") MultipartFile file, @Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity
           .badRequest()
@@ -87,15 +109,23 @@ public class AuthController {
           .badRequest()
           .body(new MessageResponse("Error: Email is already in use!"));
     }
-
-    // Create new user's account
-    User user = new User(signUpRequest.getUsername(), 
-               signUpRequest.getEmail(),
-               encoder.encode(signUpRequest.getPassword()));
-
+     User user = new User(signUpRequest.getUsername(),
+            signUpRequest.getEmail(),
+            encoder.encode(signUpRequest.getPassword()),
+            signUpRequest.getImage(),
+            22);
+    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    if(fileName.contains(".."))
+    {
+      System.out.println("not a a valid file");
+    }
+    try {
+    user.setImage(Base64.getEncoder().encodeToString(file.getBytes()));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     Set<String> strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
-
     if (strRoles == null) {
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)
           .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -128,4 +158,30 @@ public class AuthController {
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
+
+
+
+
+
+
+
+
+  //@PutMapping("/profile")
+  //public ResponseEntity<?> updateProfile(String username,String email,String image) {
+  //  UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+   // User user = userRepository.findById((long) userDetails.getId()).orElseThrow(() -> new RuntimeException("Error: User not found."));
+   // user.setUsername(username);
+   // user.setEmail(email);
+  //  user.setImage(image);
+   // userRepository.save(user);
+   // return ResponseEntity.ok(new MessageResponse("User profile updated successfully!"));
+  //}
+
+
+
+
+
+
+
+
 }
