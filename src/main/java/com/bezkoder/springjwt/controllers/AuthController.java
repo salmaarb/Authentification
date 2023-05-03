@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,8 +34,10 @@ import com.bezkoder.springjwt.security.jwt.JwtUtils;
 import com.bezkoder.springjwt.security.services.UserDetailsImpl;
 import org.springframework.web.multipart.MultipartFile;
 
-//@CrossOrigin(origins = "*", maxAge = 3600)
-@CrossOrigin({"http://localhost:9001/demande","http://localhost:3000","http://localhost:8081"})
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin({"http://localhost:9001/demande","http://localhost:3000","http://localhost:8081","http://localhost:8081/users"})
 
 @RestController
 @RequestMapping("/api/auth")
@@ -87,6 +91,28 @@ public class AuthController {
     List<User> u = userRepository.findAll();
     return u;
   }
+  @GetMapping("/user/{id}")
+  public User findById(@PathVariable int id){
+    User u = userRepository.findById(id);
+    return u;
+  }
+
+
+  @Transactional
+  @DeleteMapping("/delete/{id}")
+  public void delete(@PathVariable int id) {
+    try {
+      if(userRepository.existsById(id)) {
+        userRepository.deleteById(id);
+        System.out.println("User " + id + " deleted successfully");
+      } else {       System.out.println("User " + id + " not found");}
+    } catch (Exception e) {
+      // Log an error message if the deletion fails for some reason
+      System.out.println("Error deleting user " + id + ": " + e.getMessage());
+    }
+  }
+
+
   @GetMapping ("/solde/{id}")
   int getSolde(@PathVariable int id){
     return userRepository.getSolde(id);
@@ -96,8 +122,8 @@ public class AuthController {
     userRepository.updateSolde(n,id);
   }
 
-  @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@RequestParam("image") MultipartFile file, @Valid @RequestBody SignupRequest signUpRequest) {
+ @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     if (userRepository.existsByUsername(signUpRequest.getUsername())) {
       return ResponseEntity
           .badRequest()
@@ -113,17 +139,9 @@ public class AuthController {
             signUpRequest.getEmail(),
             encoder.encode(signUpRequest.getPassword()),
             signUpRequest.getImage(),
-            22);
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-    if(fileName.contains(".."))
-    {
-      System.out.println("not a a valid file");
-    }
-    try {
-    user.setImage(Base64.getEncoder().encodeToString(file.getBytes()));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+            22,false);
+
+
     Set<String> strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
     if (strRoles == null) {
@@ -165,23 +183,41 @@ public class AuthController {
 
 
 
+  @PutMapping("/update/{id}")
 
-  //@PutMapping("/profile")
-  //public ResponseEntity<?> updateProfile(String username,String email,String image) {
-  //  UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-   // User user = userRepository.findById((long) userDetails.getId()).orElseThrow(() -> new RuntimeException("Error: User not found."));
-   // user.setUsername(username);
-   // user.setEmail(email);
-  //  user.setImage(image);
-   // userRepository.save(user);
-   // return ResponseEntity.ok(new MessageResponse("User profile updated successfully!"));
-  //}
+  public ResponseEntity<?> updateUser( @PathVariable("id") int userId, @Valid @RequestBody SignupRequest signUpRequest) {
+    User user = userRepository.findById(userId);
 
+    if (!user.getUsername().equals(signUpRequest.getUsername()) && userRepository.existsByUsername(signUpRequest.getUsername())) {
+      return ResponseEntity
+              .badRequest()
+              .body(new MessageResponse("Error: Username is already taken!"));
+    }
 
+    if (!user.getEmail().equals(signUpRequest.getEmail()) && userRepository.existsByEmail(signUpRequest.getEmail())) {
+      return ResponseEntity
+              .badRequest()
+              .body(new MessageResponse("Error: Email is already in use!"));
+    }
 
+    user.setUsername(signUpRequest.getUsername());
+    user.setEmail(signUpRequest.getEmail());
+    user.setPassword(encoder.encode(signUpRequest.getPassword()));
 
+   user.setImage(signUpRequest.getImage());
 
+    userRepository.save(user);
 
-
+    return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
+  }
 
 }
+
+
+
+
+
+
+
+
+

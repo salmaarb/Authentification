@@ -19,7 +19,7 @@ public class SignupRequest {
   private Set<String> role;
 
   @NotBlank
-  @Size(min = 6, max = 40)
+  @Size(min = 6, max = 200)
   private String password;
   @Lob
   @Column(columnDefinition = "MEDIUMBLOB")

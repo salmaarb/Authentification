@@ -17,6 +17,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+  private boolean etat;
 
   @NotBlank
   @Size(max = 20)
@@ -44,12 +45,21 @@ public class User {
   public User() {
   }
 
-  public User(String username, String email, String password,String image,int solde) {
+  public User(String username, String email, String password,String image,int solde,boolean etat) {
     this.username = username;
     this.email = email;
     this.password = password;
     this.image=image;
     this.solde=solde;
+    this.etat=etat;
+  }
+
+  public boolean isEtat() {
+    return etat;
+  }
+
+  public void setEtat(boolean etat) {
+    this.etat = etat;
   }
 
   public int getSolde() {

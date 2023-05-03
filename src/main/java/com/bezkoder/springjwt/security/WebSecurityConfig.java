@@ -93,6 +93,10 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             .antMatchers("/validation/**").permitAll()
             .antMatchers("/userrr/**").permitAll()
             .antMatchers("/update/**").permitAll()
+            .antMatchers("/register/**").permitAll()
+            .antMatchers("/user/**").permitAll()
+            .antMatchers("/delete/**").permitAll()
+            .antMatchers("/users/**").permitAll()
     //http://localhost:9004/demandes/api/auth/userr
                 .antMatchers("/demandes/**").permitAll()
 

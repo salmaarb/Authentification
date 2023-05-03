@@ -17,14 +17,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
  Optional<User> findByUsername(String username);
 //Long findById();
 
-  Boolean existsByUsername(String username);
+ Boolean existsByUsername(String username);
+
  @Query("SELECT e.solde  FROM User e where  e.id=:id")
  int getSolde(@Param("id") int id);
+
  @Transactional
  @Modifying
  @Query("UPDATE User e SET e.solde = :n WHERE e.id= :id")
  void updateSolde(@Param("n") int n, @Param("id") int id);
 
+ void deleteById(@Param("id") int id);
+
+ User findById(@Param("id") int id);
 
  Boolean existsByEmail(String email);
+
+ Boolean existsById(int id);
 }
