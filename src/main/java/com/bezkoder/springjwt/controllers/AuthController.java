@@ -96,6 +96,69 @@ public class AuthController {
     User u = userRepository.findById(id);
     return u;
   }
+  @Transactional
+  @PutMapping("/updateEtat/{id}")
+  public void UpdateEtat(@PathVariable int id){
+    User u = userRepository.findById(id);
+    if(u.isEtat()){
+      u.setEtat(false);
+System.out.println("false");
+    }else
+    {
+      u.setEtat(true);
+      System.out.println("true");
+    }
+  }
+
+
+  @Transactional
+  @PutMapping("/updateSolde/{id}")
+  public void UpdateSolde(@PathVariable int id){
+    User u = userRepository.findById(id);
+    if(u.getSolde()==0){
+      u.setSolde(22);
+    }else
+    {
+      u.setSolde(u.getSolde());
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+  @Transactional
+  @PutMapping("/true/{id}")
+  public void UpdateEtatTrue(@PathVariable int id){
+    User u = userRepository.findById(id);
+      u.setEtat(true);
+      System.out.println("true");
+
+  }
+  @Transactional
+  @PutMapping("/false/{id}")
+  public void UpdateEtatFalse(@PathVariable int id){
+    User u = userRepository.findById(id);
+    u.setEtat(false);
+    System.out.println("false");
+
+  }
+
+
+
+
+
+
+
+
+
+
 
 
   @Transactional

@@ -96,6 +96,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
             .antMatchers("/register/**").permitAll()
             .antMatchers("/user/**").permitAll()
             .antMatchers("/delete/**").permitAll()
+            .antMatchers("/updateEtat/**").permitAll()
+
+
             .antMatchers("/users/**").permitAll()
     //http://localhost:9004/demandes/api/auth/userr
                 .antMatchers("/demandes/**").permitAll()
