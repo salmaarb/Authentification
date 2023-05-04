@@ -21,13 +21,54 @@ public class SignupRequest {
   @NotBlank
   @Size(min = 6, max = 200)
   private String password;
+
+
+  private int telephone;
   @Lob
   @Column(columnDefinition = "MEDIUMBLOB")
   private String image;
   private int solde;
-
+  private String sexe;
+  @NotBlank
+  @Size(max = 20)
+  private String nom;
+  @NotBlank
+  @Size(max = 20)
+  private String prenom;
   public String getImage() {
     return image;
+  }
+
+  public String getSexe() {
+    return sexe;
+  }
+
+  public void setSexe(String sexe) {
+    this.sexe = sexe;
+  }
+
+  public int getTelephone() {
+    return telephone;
+  }
+
+  public void setTelephone(int telephone) {
+    this.telephone = telephone;
+  }
+
+  public String getNom() {
+    return nom;
+  }
+
+  public void setNom(String nom) {
+    this.nom = nom;
+  }
+
+  public String getPrenom() {
+    return prenom;
+  }
+
+  public void setPrenom(String prenom) {
+    this.prenom = prenom;
   }
 
   public void setImage(String image) {

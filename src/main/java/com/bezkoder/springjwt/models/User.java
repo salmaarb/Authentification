@@ -19,10 +19,20 @@ public class User {
   private int id;
   private boolean etat;
 
+
+  private int telephone;
+
   @NotBlank
   @Size(max = 20)
   private String username;
 
+  private String sexe;
+  @NotBlank
+  @Size(max = 20)
+  private String nom;
+  @NotBlank
+  @Size(max = 20)
+  private String prenom;
   @NotBlank
   @Size(max = 50)
   @Email
@@ -45,13 +55,49 @@ public class User {
   public User() {
   }
 
-  public User(String username, String email, String password,String image,int solde,boolean etat) {
+  public int getTelephone() {
+    return telephone;
+  }
+
+  public void setTelephone(int telephone) {
+    this.telephone = telephone;
+  }
+
+  public User(String username, String email, String password, String image, int solde, boolean etat, String nom, String prenom, String sexe,int telephone) {
     this.username = username;
     this.email = email;
     this.password = password;
     this.image=image;
+    this.nom=nom;
+    this.sexe=sexe;
+    this.prenom=prenom;
     this.solde=solde;
     this.etat=etat;
+    this.telephone=telephone;
+  }
+
+  public String getSexe() {
+    return sexe;
+  }
+
+  public void setSexe(String sexe) {
+    this.sexe = sexe;
+  }
+
+  public String getNom() {
+    return nom;
+  }
+
+  public void setNom(String nom) {
+    this.nom = nom;
+  }
+
+  public String getPrenom() {
+    return prenom;
+  }
+
+  public void setPrenom(String prenom) {
+    this.prenom = prenom;
   }
 
   public boolean isEtat() {

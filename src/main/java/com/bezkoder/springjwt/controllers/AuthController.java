@@ -75,8 +75,9 @@ public class AuthController {
                          userDetails.getId(), 
                          userDetails.getUsername(), 
                          userDetails.getEmail(),
-                         userDetails.getImage(),
-                         roles));
+                         userDetails.getImage(),roles,
+                         userDetails.getNom(),userDetails.getPrenom(), userDetails.getSexe(), userDetails.getTelephone()
+                         ));
 
   }
 
@@ -201,8 +202,11 @@ System.out.println("false");
      User user = new User(signUpRequest.getUsername(),
             signUpRequest.getEmail(),
             encoder.encode(signUpRequest.getPassword()),
-            signUpRequest.getImage(),
-            22,false);
+            signUpRequest.getImage(),22,false,
+            signUpRequest.getNom(),
+            signUpRequest.getPrenom(),
+             signUpRequest.getSexe(), signUpRequest.getTelephone()
+            );
 
 
     Set<String> strRoles = signUpRequest.getRole();
@@ -267,7 +271,9 @@ System.out.println("false");
     user.setEmail(signUpRequest.getEmail());
     user.setPassword(encoder.encode(signUpRequest.getPassword()));
     user.setSolde(signUpRequest.getSolde());
-
+user.setNom(signUpRequest.getNom());
+user.setPrenom(signUpRequest.getPrenom());
+user.setSexe(signUpRequest.getSexe());
    user.setImage(signUpRequest.getImage());
 
     userRepository.save(user);
