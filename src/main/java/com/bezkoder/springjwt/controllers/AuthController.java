@@ -36,8 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-//@CrossOrigin({"http://localhost:9001/demande","http://localhost:3000","http://localhost:8081","http://localhost:8081/users"})
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin({"http://localhost:9001/demande","http://localhost:3000","http://localhost:8081","http://localhost:8081/users"})
 
 @RestController
 @RequestMapping("/api/auth")
@@ -266,6 +266,7 @@ System.out.println("false");
     user.setUsername(signUpRequest.getUsername());
     user.setEmail(signUpRequest.getEmail());
     user.setPassword(encoder.encode(signUpRequest.getPassword()));
+    user.setSolde(signUpRequest.getSolde());
 
    user.setImage(signUpRequest.getImage());
 
