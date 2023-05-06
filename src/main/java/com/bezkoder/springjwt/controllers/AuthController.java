@@ -165,15 +165,12 @@ System.out.println("false");
   @Transactional
   @DeleteMapping("/delete/{id}")
   public void delete(@PathVariable int id) {
-    try {
-      if(userRepository.existsById(id)) {
+
+
         userRepository.deleteById(id);
         System.out.println("User " + id + " deleted successfully");
-      } else {       System.out.println("User " + id + " not found");}
-    } catch (Exception e) {
-      // Log an error message if the deletion fails for some reason
-      System.out.println("Error deleting user " + id + ": " + e.getMessage());
-    }
+
+
   }
 
 
